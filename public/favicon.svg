@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo circular -->
+  <circle cx="100" cy="100" r="100" fill="#1e293b"/>
+  <circle cx="100" cy="100" r="95" fill="url(#grad1)"/>
+
+  <!-- Tenedor -->
+  <g transform="translate(60, 50)">
+    <!-- Mango -->
+    <rect x="8" y="20" width="4" height="70" fill="white" rx="2"/>
+    <!-- Patas del tenedor -->
+    <rect x="0" y="0" width="3" height="25" fill="white" rx="1.5"/>
+    <rect x="7" y="0" width="3" height="25" fill="white" rx="1.5"/>
+    <rect x="14" y="0" width="3" height="25" fill="white" rx="1.5"/>
+    <!-- Conector -->
+    <rect x="0" y="22" width="17" height="3" fill="white" rx="1.5"/>
+  </g>
+
+  <!-- Cuchara -->
+  <g transform="translate(110, 50)">
+    <!-- Mango -->
+    <rect x="8" y="20" width="4" height="70" fill="white" rx="2"/>
+    <!-- Cuenco de cuchara -->
+    <ellipse cx="10" cy="15" rx="8" ry="12" fill="white"/>
+    <path d="M 2 15 Q 2 25 10 28 Q 18 25 18 15" fill="white"/>
+  </g>
+
+  <!-- Texto "OSORIOS" en la parte inferior -->
+  <text x="100" y="165" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="2">OSORIOS</text>
+</svg>
+
