@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'OsoriosFoodApp')</title>
 
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="shortcut icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+
     <!-- Tailwind CSS (incluido con Laravel) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
