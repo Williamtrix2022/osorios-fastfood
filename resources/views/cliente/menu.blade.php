@@ -168,6 +168,16 @@
 
 @push('scripts')
 <script>
+    /**
+     * Formatea un precio en pesos colombianos
+     */
+    function formatPrecio(precio) {
+        return '$ ' + parseFloat(precio).toLocaleString('es-CO', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    }
+
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     let productos = [];
     let currentProductId = null;
@@ -233,7 +243,7 @@
             clone.querySelector('img').alt = producto.nombre;
             clone.querySelector('.nombre').textContent = producto.nombre;
             clone.querySelector('.descripcion').textContent = producto.descripcion || 'Producto delicioso';
-            clone.querySelector('.precio').textContent = `$${parseFloat(producto.precio).toFixed(2)}`;
+            clone.querySelector('.precio').textContent = formatPrecio(producto.precio);
 
             grid.appendChild(clone);
         });
@@ -286,7 +296,7 @@
         document.getElementById('modalImage').src = imgSrc;
         document.getElementById('modalNombre').textContent = producto.nombre;
         document.getElementById('modalDescripcion').textContent = producto.descripcion || 'Producto delicioso de la casa';
-        document.getElementById('modalPrice').textContent = `$${parseFloat(producto.precio).toFixed(2)}`;
+        document.getElementById('modalPrice').textContent = formatPrecio(producto.precio);
         document.getElementById('modalQuantity').value = 1;
 
         const modal = document.getElementById('productModal');
@@ -417,7 +427,7 @@
             clone.querySelector('img').alt = producto.nombre;
             clone.querySelector('.nombre').textContent = producto.nombre;
             clone.querySelector('.descripcion').textContent = producto.descripcion || 'Producto delicioso';
-            clone.querySelector('.precio').textContent = `$${parseFloat(producto.precio).toFixed(2)}`;
+            clone.querySelector('.precio').textContent = formatPrecio(producto.precio);
 
             grid.appendChild(clone);
         });
@@ -926,7 +936,7 @@
             clone.querySelector('img').alt = producto.nombre;
             clone.querySelector('.nombre').textContent = producto.nombre;
             clone.querySelector('.descripcion').textContent = producto.descripcion || '';
-            clone.querySelector('.precio').textContent = `$${parseFloat(producto.precio).toFixed(2)}`;
+            clone.querySelector('.precio').textContent = formatPrecio(producto.precio);
 
             grid.appendChild(clone);
         });
@@ -967,7 +977,7 @@
         document.getElementById('modalImage').src = producto.imagen ? `/storage/${producto.imagen}` : 'https://via.placeholder.com/400x300?text=Producto';
         document.getElementById('modalNombre').textContent = producto.nombre;
         document.getElementById('modalDescripcion').textContent = producto.descripcion || '';
-        document.getElementById('modalPrice').textContent = `$${parseFloat(producto.precio).toFixed(2)}`;
+        document.getElementById('modalPrice').textContent = formatPrecio(producto.precio);
         document.getElementById('modalQuantity').value = 1;
         document.getElementById('productModal').classList.remove('hidden');
     }
@@ -1065,7 +1075,7 @@
             clone.querySelector('img').alt = producto.nombre;
             clone.querySelector('.nombre').textContent = producto.nombre;
             clone.querySelector('.descripcion').textContent = producto.descripcion || '';
-            clone.querySelector('.precio').textContent = `$${parseFloat(producto.precio).toFixed(2)}`;
+            clone.querySelector('.precio').textContent = formatPrecio(producto.precio);
             grid.appendChild(clone);
         });
     });
