@@ -1,0 +1,136 @@
+/* ========================================
+   AJUSTES GLOBALES DE TAMAÑO EQUILIBRADOS
+   Balance entre compacto y visual (~25% reducción)
+   ======================================== */
+
+/* EXCEPCIONES - No aplicar a estructuras principales */
+.app-layout,
+.main-wrapper,
+.page-container,
+aside.sidebar,
+.sidebar-left,
+.content-wrapper {
+    /* Mantener tamaños originales para estructura */
+}
+
+/* Tamaño base equilibrado */
+html {
+    font-size: 14px !important; /* Punto medio entre 16px y 13px */
+}
+
+/* Headings con mejor proporción */
+h1 { font-size: 1.75rem !important; } /* ~24.5px */
+h2 { font-size: 1.5rem !important; } /* ~21px */
+h3 { font-size: 1.25rem !important; } /* ~17.5px */
+h4 { font-size: 1.125rem !important; } /* ~15.75px */
+h5 { font-size: 1rem !important; } /* ~14px */
+h6 { font-size: 0.875rem !important; } /* ~12.25px */
+
+/* Padding y margin equilibrados */
+.p-4 { padding: 0.625rem !important; }
+.p-6 { padding: 1.125rem !important; }
+.p-8 { padding: 1.625rem !important; }
+
+.m-4 { margin: 0.625rem !important; }
+.m-6 { margin: 1.125rem !important; }
+.m-8 { margin: 1.625rem !important; }
+
+.mb-4 { margin-bottom: 0.625rem !important; }
+.mb-6 { margin-bottom: 1.125rem !important; }
+.mb-8 { margin-bottom: 1.625rem !important; }
+.mb-12 { margin-bottom: 2.25rem !important; }
+
+/* Gaps equilibrados */
+.gap-4 { gap: 0.625rem !important; }
+.gap-6 { gap: 1.125rem !important; }
+.gap-8 { gap: 1.625rem !important; }
+
+/* Tamaños de texto equilibrados */
+.text-xs { font-size: 0.625rem !important; }
+.text-sm { font-size: 0.75rem !important; }
+.text-base { font-size: 0.875rem !important; }
+.text-lg { font-size: 1rem !important; }
+.text-xl { font-size: 1.125rem !important; }
+.text-2xl { font-size: 1.375rem !important; }
+.text-3xl { font-size: 1.625rem !important; }
+.text-4xl { font-size: 2rem !important; }
+.text-5xl { font-size: 2.5rem !important; }
+.text-6xl { font-size: 3rem !important; }
+
+/* Iconos ligeramente reducidos */
+.fa, .fas, .far, .fab {
+    font-size: 0.925em !important;
+}
+
+i.text-xl { font-size: 1rem !important; }
+i.text-2xl { font-size: 1.25rem !important; }
+i.text-3xl { font-size: 1.5rem !important; }
+i.text-4xl { font-size: 1.75rem !important; }
+i.text-5xl { font-size: 2rem !important; }
+
+/* Botones con mejor proporción */
+button, .btn, a.btn {
+    padding: 0.5625rem 1.125rem !important;
+    font-size: 0.875rem !important;
+}
+
+/* Inputs más cómodos */
+input, textarea, select {
+    padding: 0.5625rem 0.875rem !important;
+    font-size: 0.875rem !important;
+}
+
+/* Tarjetas equilibradas */
+.card, .product-card, .stat-card {
+    padding: 1.125rem !important;
+}
+
+/* Badges proporcionales */
+.badge, .cart-badge, .product-badge {
+    padding: 0.3125rem 0.625rem !important;
+    font-size: 0.6875rem !important;
+}
+
+/* Avatares de tamaño medio */
+.avatar, .profile-avatar {
+    width: 56px !important;
+    height: 56px !important;
+    font-size: 1.375rem !important;
+}
+
+/* Modales equilibrados */
+.modal-content {
+    padding: 1.625rem !important;
+    max-width: 92% !important;
+}
+
+/* Sidebar proporcional - NO aplicar a sidebars principales */
+.sidebar-carrito {
+    width: 320px !important;
+}
+
+/* NO sobrescribir aside.sidebar que es el sidebar principal de admin/empleado */
+
+/* Navbar/topbar con altura adecuada */
+.navbar, .navbar-top, .topbar {
+    padding: 0.625rem 1.125rem !important;
+    height: auto !important;
+    min-height: 60px !important;
+}
+
+/* Espaciado de listas */
+li {
+    margin-bottom: 0.3125rem !important;
+}
+
+/* Tables legibles */
+table th, table td {
+    padding: 0.625rem !important;
+    font-size: 0.875rem !important;
+}
+
+/* Border radius proporcionales */
+.rounded-lg { border-radius: 0.5rem !important; }
+.rounded-xl { border-radius: 0.75rem !important; }
+.rounded-2xl { border-radius: 1rem !important; }
+
