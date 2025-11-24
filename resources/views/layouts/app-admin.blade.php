@@ -520,6 +520,10 @@
                     <i class="fas fa-receipt"></i>
                     <span>Pedidos</span>
                 </a>
+                <a href="{{ route('admin.pagos.index') }}" class="menu-item {{ request()->routeIs('admin.pagos.*') ? 'active' : '' }}">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Pagos</span>
+                </a>
 
                 <div class="menu-section-title mt-6">
                     <i class="fas fa-boxes mr-2"></i>Gestión

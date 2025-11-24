@@ -394,7 +394,11 @@
                 </div>
                 <a href="{{ route('empleado.pedidos') }}" class="menu-item {{ request()->routeIs('empleado.pedidos') ? 'active' : '' }}">
                     <i class="fas fa-clipboard-list"></i>
-                    <span>Ver Pedidos</span>
+                    <span>Pedidos Activos</span>
+                </a>
+                <a href="{{ route('empleado.pedidos.completados') }}" class="menu-item {{ request()->routeIs('empleado.pedidos.completados') ? 'active' : '' }}">
+                    <i class="fas fa-check-double"></i>
+                    <span>Pedidos Completados</span>
                 </a>
             </nav>
         </aside>
