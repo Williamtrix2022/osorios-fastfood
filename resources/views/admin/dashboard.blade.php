@@ -8,7 +8,7 @@
 
 <!-- ===== TARJETAS DE ESTADÍSTICAS ===== -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    
+
     <!-- Total Pedidos -->
     <div class="stat-card bg-gradient-to-br from-blue-900 to-blue-800 rounded-xl p-6 border-2 border-blue-600">
         <div class="flex items-center justify-between mb-4">
@@ -75,9 +75,62 @@
 
 </div>
 
+<!-- ===== ESTADÍSTICAS DE PAGOS ===== -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+    <!-- Pagos Pendientes -->
+    <div class="bg-gray-800 rounded-xl p-6 border-2 border-yellow-600">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <p class="text-yellow-300 text-sm font-semibold uppercase">Pagos Pendientes</p>
+                <h2 class="text-4xl font-bold text-white">{{ $pagosPendientes ?? 0 }}</h2>
+            </div>
+            <div class="bg-yellow-500 w-16 h-16 rounded-full flex items-center justify-center">
+                <i class="fas fa-clock text-3xl text-yellow-900"></i>
+            </div>
+        </div>
+        <a href="{{ route('admin.pagos.index', ['estado_pago' => 'pendiente']) }}" class="text-yellow-400 hover:text-yellow-300 text-sm transition">
+            <i class="fas fa-arrow-right mr-1"></i>Ver pagos pendientes
+        </a>
+    </div>
+
+    <!-- Pagos Completados -->
+    <div class="bg-gray-800 rounded-xl p-6 border-2 border-green-600">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <p class="text-green-300 text-sm font-semibold uppercase">Pagos Completados</p>
+                <h2 class="text-4xl font-bold text-white">{{ $pagosCompletados ?? 0 }}</h2>
+            </div>
+            <div class="bg-green-500 w-16 h-16 rounded-full flex items-center justify-center">
+                <i class="fas fa-check-circle text-3xl text-green-900"></i>
+            </div>
+        </div>
+        <a href="{{ route('admin.pagos.index', ['estado_pago' => 'completado']) }}" class="text-green-400 hover:text-green-300 text-sm transition">
+            <i class="fas fa-arrow-right mr-1"></i>Ver pagos completados
+        </a>
+    </div>
+
+    <!-- Total Recaudado -->
+    <div class="bg-gradient-to-br from-gold-900 to-gold-800 rounded-xl p-6 border-2 border-gold-600" style="background: linear-gradient(135deg, #b8860b 0%, #8b6914 100%);">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <p class="text-yellow-200 text-sm font-semibold uppercase">Total Recaudado</p>
+                <h2 class="text-4xl font-bold text-white">${{ number_format($totalRecaudado ?? 0, 2) }}</h2>
+            </div>
+            <div class="bg-yellow-400 w-16 h-16 rounded-full flex items-center justify-center">
+                <i class="fas fa-money-bill-wave text-3xl text-yellow-900"></i>
+            </div>
+        </div>
+        <a href="{{ route('admin.pagos.index') }}" class="text-yellow-200 hover:text-white text-sm transition">
+            <i class="fas fa-arrow-right mr-1"></i>Gestionar pagos
+        </a>
+    </div>
+
+</div>
+
 <!-- ===== FILA 2: GRÁFICOS Y TABLAS ===== -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-    
+
     <!-- Pedidos por Estado -->
     <div class="bg-gray-800 rounded-xl p-6 border-2 border-gray-700">
         <h3 class="text-2xl font-bold text-white mb-6">
