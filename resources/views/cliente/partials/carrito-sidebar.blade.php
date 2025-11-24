@@ -1,126 +1,493 @@
-<!-- ===== HEADER DEL CARRITO ===== -->
-<div class="p-6 border-b border-gray-700 bg-gradient-to-r from-gray-800 to-gray-700">
-    <div class="flex justify-between items-center">
-        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-            <i class="fas fa-shopping-cart text-gold"></i>
-            Carrito
-        </h2>
-        <span id="itemCount" class="text-sm font-bold px-3 py-1 rounded-full text-black" 
-              style="background-color: var(--color-gold);">
-            0 items
-        </span>
+<!-- ===== HEADER DEL SIDEBAR ===== -->
+<div class="sidebar-header">
+    <div class="header-content">
+        <div class="header-title">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Mi Carrito</span>
+        </div>
+        <button onclick="toggleCartSidebar()" class="close-sidebar-btn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="item-counter" id="itemCount">
+        <i class="fas fa-cube mr-2"></i>
+        <span>0 productos</span>
     </div>
 </div>
 
 <!-- ===== ITEMS DEL CARRITO ===== -->
-<div class="flex-1 overflow-y-auto p-6" id="cartItems">
-    <div id="emptyCart" class="flex flex-col items-center justify-center h-full text-center">
-        <i class="fas fa-shopping-cart text-gray-500 text-5xl mb-4"></i>
-        <p class="text-gray-400 text-lg">Tu carrito está vacío</p>
-        <p class="text-gray-500 text-sm mt-2">Agrega productos para comenzar</p>
+<div class="sidebar-items" id="cartItems">
+    <div class="empty-cart-state">
+        <i class="fas fa-shopping-bag"></i>
+        <p class="empty-title">Tu carrito está vacío</p>
+        <p class="empty-subtitle">¡Empieza a agregar productos deliciosos!</p>
     </div>
 </div>
 
-<!-- ===== RESUMEN Y BOTONES ===== -->
-<div class="p-6 border-t border-gray-700 space-y-4 bg-gradient-to-t from-gray-900 to-gray-800">
-    
-    <!-- Detalles del total -->
-    <div class="space-y-3 pb-4 border-b border-gray-700">
-        <div class="flex justify-between text-gray-400">
-            <span>Subtotal:</span>
-            <span id="subtotal">$0.00</span>
+<!-- ===== RESUMEN Y ACCIONES ===== -->
+<div class="sidebar-footer">
+
+    <!-- Totales -->
+    <div class="totals-section">
+        <div class="total-row">
+            <span>Subtotal</span>
+            <span id="subtotal" class="total-value">$0.00</span>
         </div>
-        <div class="flex justify-between text-gray-400">
-            <span>Impuesto (10%):</span>
-            <span id="tax">$0.00</span>
+        <div class="total-row">
+            <span>Impuesto (10%)</span>
+            <span id="tax" class="total-value">$0.00</span>
         </div>
-        <div class="flex justify-between text-white font-bold text-lg pt-2">
-            <span>Total:</span>
-            <span id="total" style="color: var(--color-gold);">$0.00</span>
+        <div class="total-row-grand">
+            <span>Total a Pagar</span>
+            <span id="total" class="total-grand">$0.00</span>
         </div>
     </div>
 
-    <!-- Botón de pago -->
-    <button 
-        onclick="proceedToCheckout()" 
-        class="w-full py-3 rounded-lg text-white font-bold transition hover:opacity-90 active:scale-95"
-        style="background-color: var(--color-gold); color: var(--color-dark);"
-        id="checkoutBtn"
-    >
-        <i class="fas fa-credit-card mr-2"></i>Pagar Ahora
-    </button>
+    <!-- Botones de acción -->
+    <div class="actions-section">
+        <a href="{{ route('cliente.carrito') }}" class="btn-checkout" id="checkoutBtn">
+            <i class="fas fa-credit-card mr-2"></i>
+            <span>Ir a Pagar</span>
+        </a>
 
-    <!-- Botón vaciar carrito -->
-    <button 
-        onclick="clearCart()" 
-        class="w-full py-2 rounded-lg border-2 border-gray-600 text-white font-semibold hover:bg-gray-700 transition"
-    >
-        <i class="fas fa-trash mr-2"></i>Vaciar Carrito
-    </button>
+        <button onclick="clearCart()" class="btn-clear">
+            <i class="fas fa-trash-alt mr-2"></i>
+            <span>Vaciar Carrito</span>
+        </button>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="footer-info">
+        <i class="fas fa-shield-check text-green-500"></i>
+        <span>Compra segura y protegida</span>
+    </div>
 </div>
 
-<!-- ===== SCRIPTS PARA EL CARRITO ===== -->
+<!-- ===== ESTILOS DEL SIDEBAR ===== -->
+<style>
+    /* ===== HEADER DEL SIDEBAR ===== */
+    .sidebar-header {
+        padding: 1.5rem;
+        background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+        border-bottom: 2px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .header-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--color-text);
+    }
+
+    .header-title i {
+        color: var(--color-accent);
+        font-size: 1.75rem;
+    }
+
+    .close-sidebar-btn {
+        width: 40px;
+        height: 40px;
+        background: rgba(239, 68, 68, 0.1);
+        border: 2px solid rgba(239, 68, 68, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-danger);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1.125rem;
+    }
+
+    .close-sidebar-btn:hover {
+        background: var(--color-danger);
+        color: white;
+        transform: rotate(90deg);
+    }
+
+    .item-counter {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: rgba(245, 158, 11, 0.1);
+        border: 2px solid rgba(245, 158, 11, 0.3);
+        border-radius: 12px;
+        color: var(--color-accent);
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    /* ===== ITEMS DEL CARRITO ===== */
+    .sidebar-items {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        background: var(--color-primary);
+    }
+
+    .empty-cart-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .empty-cart-state i {
+        font-size: 4rem;
+        color: var(--color-text-muted);
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .empty-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-subtitle {
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+    }
+
+    /* Tarjeta de item del carrito */
+    .cart-item {
+        background: var(--color-secondary);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        animation: slideInRight 0.3s ease-out;
+    }
+
+    .cart-item:hover {
+        border-color: var(--color-accent);
+        box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
+    }
+
+    .item-main {
+        display: flex;
+        gap: 0.875rem;
+        margin-bottom: 0.875rem;
+    }
+
+    .item-image-small {
+        width: 70px;
+        height: 70px;
+        border-radius: 10px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    }
+
+    .item-image-small img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .cart-item:hover .item-image-small img {
+        transform: scale(1.1);
+    }
+
+    .item-details {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .item-name {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: 0.25rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.3;
+    }
+
+    .item-price {
+        font-size: 1.125rem;
+        font-weight: 800;
+        color: var(--color-accent);
+    }
+
+    .item-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .quantity-mini {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--color-primary);
+        padding: 0.375rem 0.75rem;
+        border-radius: 10px;
+    }
+
+    .quantity-mini-btn {
+        width: 28px;
+        height: 28px;
+        background: var(--color-accent);
+        color: var(--color-primary);
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .quantity-mini-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .quantity-mini-btn:active {
+        transform: scale(0.9);
+    }
+
+    .quantity-mini-value {
+        min-width: 30px;
+        text-align: center;
+        color: var(--color-text);
+        font-weight: 700;
+        font-size: 0.95rem;
+    }
+
+    .item-remove {
+        background: none;
+        border: none;
+        color: var(--color-danger);
+        cursor: pointer;
+        font-size: 0.875rem;
+        padding: 0.5rem;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .item-remove:hover {
+        color: #dc2626;
+        transform: scale(1.1);
+    }
+
+    /* ===== FOOTER DEL SIDEBAR ===== */
+    .sidebar-footer {
+        padding: 1.5rem;
+        background: var(--color-secondary);
+        border-top: 2px solid rgba(245, 158, 11, 0.2);
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .totals-section {
+        padding: 1.25rem;
+        background: var(--color-primary);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        color: var(--color-text-muted);
+        font-size: 0.95rem;
+    }
+
+    .total-value {
+        font-weight: 600;
+        color: var(--color-text);
+    }
+
+    .total-row-grand {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        margin-top: 0.5rem;
+        border-top: 2px solid rgba(245, 158, 11, 0.3);
+        font-size: 1.0625rem;
+        font-weight: 700;
+        color: var(--color-text);
+    }
+
+    .total-grand {
+        font-size: 1.625rem;
+        font-weight: 800;
+        color: var(--color-accent);
+    }
+
+    .actions-section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .btn-checkout {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
+        color: var(--color-primary);
+        font-weight: 700;
+        font-size: 1.0625rem;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+    }
+
+    .btn-checkout:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(245, 158, 11, 0.6);
+    }
+
+    .btn-checkout:active {
+        transform: translateY(0);
+    }
+
+    .btn-checkout:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-clear {
+        width: 100%;
+        padding: 0.875rem;
+        background: transparent;
+        color: var(--color-text);
+        font-weight: 600;
+        border: 2px solid rgba(248, 250, 252, 0.2);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-clear:hover {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: var(--color-danger);
+        color: var(--color-danger);
+    }
+
+    .footer-info {
+        text-align: center;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(248, 250, 252, 0.1);
+        color: var(--color-text-muted);
+        font-size: 0.8125rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+</style>
+
+<!-- ===== SCRIPTS DEL SIDEBAR ===== -->
 @push('scripts')
 <script>
     /**
-     * FUNCIÓN: Actualizar la visualización del carrito
+     * ===== ACTUALIZAR VISUALIZACIÓN DEL CARRITO =====
      */
     function updateCartDisplay() {
         const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
         const cartItemsDiv = document.getElementById('cartItems');
         const itemCount = document.getElementById('itemCount');
 
-        // Actualizar contador de items
+        // Actualizar contador
         const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
-        itemCount.textContent = `${totalItems} ${totalItems === 1 ? 'item' : 'items'}`;
+        itemCount.innerHTML = `<i class="fas fa-cube mr-2"></i><span>${totalItems} ${totalItems === 1 ? 'producto' : 'productos'}</span>`;
 
-        // Si no hay productos en el carrito
+        // Si el carrito está vacío
         if (carrito.length === 0) {
             cartItemsDiv.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-full text-center">
-                    <i class="fas fa-shopping-cart text-gray-500 text-5xl mb-4"></i>
-                    <p class="text-gray-400 text-lg">Tu carrito está vacío</p>
-                    <p class="text-gray-500 text-sm mt-2">Agrega productos para comenzar</p>
+                <div class="empty-cart-state">
+                    <i class="fas fa-shopping-bag"></i>
+                    <p class="empty-title">Tu carrito está vacío</p>
+                    <p class="empty-subtitle">¡Empieza a agregar productos deliciosos!</p>
                 </div>
             `;
+            document.getElementById('checkoutBtn').style.pointerEvents = 'none';
+            document.getElementById('checkoutBtn').style.opacity = '0.5';
+            updateCartTotals();
             return;
         }
 
-        // Renderizar cada item del carrito
-        cartItemsDiv.innerHTML = carrito.map((item, index) => `
-            <div class="bg-gray-700 p-4 rounded-lg mb-3 hover:bg-gray-600 transition border border-gray-600">
-                
-                <!-- Fila 1: Imagen + Info -->
-                <div class="flex gap-3 mb-3">
-                    <img src="${item.imagen ? '/storage/' + item.imagen : 'https://via.placeholder.com/60?text=Producto'}" 
-                         alt="${item.nombre}" 
-                         class="w-16 h-16 rounded object-cover border border-gray-500">
-                    <div class="flex-1">
-                        <h4 class="text-white font-semibold line-clamp-2">${item.nombre}</h4>
-                        <p class="text-gold font-bold text-sm">$${parseFloat(item.precio).toFixed(2)}</p>
-                    </div>
-                </div>
-                
-                <!-- Fila 2: Cantidad + Eliminar -->
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2 bg-gray-800 rounded px-2 py-1">
-                        <button onclick="decrementCartItem(${index})" class="text-white hover:text-gold transition px-2">−</button>
-                        <span class="w-6 text-center text-white font-bold">${item.cantidad}</span>
-                        <button onclick="incrementCartItem(${index})" class="text-white hover:text-gold transition px-2">+</button>
-                    </div>
-                    <button onclick="removeCartItem(${index})" class="text-red-500 hover:text-red-700 transition text-sm">
-                        <i class="fas fa-trash"></i> Eliminar
-                    </button>
-                </div>
-            </div>
-        `).join('');
+        document.getElementById('checkoutBtn').style.pointerEvents = 'auto';
+        document.getElementById('checkoutBtn').style.opacity = '1';
 
-        // Actualizar totales
+        // Renderizar items
+        cartItemsDiv.innerHTML = carrito.map((item, index) => {
+            const imgSrc = item.imagen
+                ? `/storage/${item.imagen}`
+                : `https://via.placeholder.com/70x70/1e293b/f59e0b?text=${encodeURIComponent(item.nombre.substring(0, 1))}`;
+
+            return `
+                <div class="cart-item" style="animation-delay: ${index * 0.05}s">
+                    <div class="item-main">
+                        <div class="item-image-small">
+                            <img src="${imgSrc}" alt="${item.nombre}">
+                        </div>
+                        <div class="item-details">
+                            <h4 class="item-name">${item.nombre}</h4>
+                            <p class="item-price">$${parseFloat(item.precio).toFixed(2)}</p>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="quantity-mini">
+                            <button onclick="decrementCartItem(${index})" class="quantity-mini-btn">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="quantity-mini-value">${item.cantidad}</span>
+                            <button onclick="incrementCartItem(${index})" class="quantity-mini-btn">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <button onclick="removeCartItem(${index})" class="item-remove">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
         updateCartTotals();
     }
 
     /**
-     * FUNCIÓN: Actualizar totales (subtotal, impuesto, total)
+     * ===== ACTUALIZAR TOTALES =====
      */
     function updateCartTotals() {
         const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -131,13 +498,10 @@
         document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
         document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
         document.getElementById('total').textContent = `$${total.toFixed(2)}`;
-
-        // Deshabilitar botón de pago si el carrito está vacío
-        document.getElementById('checkoutBtn').disabled = carrito.length === 0;
     }
 
     /**
-     * FUNCIÓN: Aumentar cantidad de un item
+     * ===== INCREMENTAR ITEM =====
      */
     function incrementCartItem(index) {
         const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -145,103 +509,106 @@
             carrito[index].cantidad++;
             localStorage.setItem('carrito', JSON.stringify(carrito));
             updateCartDisplay();
-            window.dispatchEvent(new Event('cartUpdated'));
+            updateCartCount();
         }
     }
 
     /**
-     * FUNCIÓN: Disminuir cantidad de un item
+     * ===== DECREMENTAR ITEM =====
      */
     function decrementCartItem(index) {
         const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
         if (carrito[index]) {
             if (carrito[index].cantidad > 1) {
                 carrito[index].cantidad--;
+                localStorage.setItem('carrito', JSON.stringify(carrito));
+                updateCartDisplay();
+                updateCartCount();
             } else {
-                carrito.splice(index, 1);
+                removeCartItem(index);
             }
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            updateCartDisplay();
-            window.dispatchEvent(new Event('cartUpdated'));
         }
     }
 
     /**
-     * FUNCIÓN: Eliminar un item del carrito
+     * ===== ELIMINAR ITEM =====
      */
     function removeCartItem(index) {
+        const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        const producto = carrito[index];
+
         Swal.fire({
             title: '¿Eliminar producto?',
+            text: `¿Quitar ${producto.nombre} del carrito?`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: 'var(--color-gold)',
+            confirmButtonColor: '#f59e0b',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
+            confirmButtonText: '<i class="fas fa-check mr-1"></i> Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            background: '#1e293b',
+            color: '#f8fafc'
         }).then((result) => {
             if (result.isConfirmed) {
-                const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
                 carrito.splice(index, 1);
                 localStorage.setItem('carrito', JSON.stringify(carrito));
                 updateCartDisplay();
-                window.dispatchEvent(new Event('cartUpdated'));
+                updateCartCount();
             }
         });
     }
 
     /**
-     * FUNCIÓN: Vaciar todo el carrito
+     * ===== VACIAR CARRITO =====
      */
     function clearCart() {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: 'Se vaciará todo tu carrito',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: 'var(--color-gold)',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Sí, vaciar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                localStorage.removeItem('carrito');
-                updateCartDisplay();
-                window.dispatchEvent(new Event('cartUpdated'));
-            }
-        });
-    }
-
-    /**
-     * FUNCIÓN: Ir al checkout
-     */
-    function proceedToCheckout() {
         const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
         if (carrito.length === 0) {
             Swal.fire({
-                icon: 'warning',
+                icon: 'info',
                 title: 'Carrito vacío',
-                text: 'Agrega productos antes de continuar',
-                confirmButtonColor: 'var(--color-gold)'
+                text: 'No hay productos en tu carrito',
+                confirmButtonColor: '#f59e0b',
+                background: '#1e293b',
+                color: '#f8fafc'
             });
             return;
         }
 
-        window.location.href = '/cliente/carrito';
+        Swal.fire({
+            title: '¿Vaciar carrito?',
+            text: 'Se eliminarán todos los productos',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fas fa-trash-alt mr-1"></i> Sí, vaciar',
+            cancelButtonText: 'Cancelar',
+            background: '#1e293b',
+            color: '#f8fafc'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.removeItem('carrito');
+                updateCartDisplay();
+                updateCartCount();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Carrito vaciado',
+                    text: 'Todos los productos fueron eliminados',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    background: '#1e293b',
+                    color: '#f8fafc'
+                });
+            }
+        });
     }
 
-    /**
-     * EVENTO: Actualizar carrito al cargar la página
-     */
+    // ===== INICIALIZAR Y ESCUCHAR EVENTOS =====
     document.addEventListener('DOMContentLoaded', updateCartDisplay);
-
-    /**
-     * EVENTO: Escuchar cambios en localStorage (otra pestaña)
-     */
-    window.addEventListener('storage', updateCartDisplay);
-
-    /**
-     * EVENTO: Escuchar evento personalizado de carrito actualizado
-     */
     window.addEventListener('cartUpdated', updateCartDisplay);
 </script>
 @endpush
+
