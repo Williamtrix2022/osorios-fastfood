@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\AdminController;
@@ -61,6 +62,7 @@ Route::middleware(['auth', 'cliente'])->prefix('cliente')->name('cliente.')->gro
 Route::middleware(['auth', 'empleado'])->prefix('empleado')->name('empleado.')->group(function () {
     Route::get('/dashboard', [EmpleadoController::class, 'dashboard'])->name('dashboard');
     Route::get('/pedidos', [EmpleadoController::class, 'pedidos'])->name('pedidos');
+    Route::get('/pedidos-completados', [EmpleadoController::class, 'pedidosCompletados'])->name('pedidos.completados');
     Route::get('/pedido/{id}', [EmpleadoController::class, 'verPedido'])->name('pedido.detalle');
     Route::patch('/pedido/{pedido}/estado', [EmpleadoController::class, 'cambiarEstado'])->name('pedido.estado');
 
@@ -68,6 +70,7 @@ Route::middleware(['auth', 'empleado'])->prefix('empleado')->name('empleado.')->
     Route::get('/api/pendientes', [EmpleadoController::class, 'getPedidosPendientes']);
     Route::get('/api/en-preparacion', [EmpleadoController::class, 'getPedidosEnPreparacion']);
     Route::get('/api/pedidos', [EmpleadoController::class, 'getPedidosActivos']);
+    Route::get('/api/pedidos-completados', [EmpleadoController::class, 'getPedidosCompletadosAPI']);
 });
 
 // ============================================
@@ -89,10 +92,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/pedido/{pedido}', [PedidoController::class, 'update'])->name('pedidos.update');
     Route::delete('/pedido/{pedido}', [PedidoController::class, 'destroy'])->name('pedidos.destroy');
 
+    // Gestión de pagos
+    Route::get('/pagos', [PagoController::class, 'index'])->name('pagos.index');
+    Route::get('/pago/{pago}', [PagoController::class, 'show'])->name('pagos.show');
+    Route::patch('/pago/{pago}/estado', [PagoController::class, 'actualizarEstado'])->name('pagos.actualizar');
+
     // APIs para admin
     Route::get('/api/estadisticas', [AdminController::class, 'getEstadisticas']);
     Route::get('/api/productos', [ProductoController::class, 'getProductos']);
     Route::get('/api/productos/categoria/{categoriaId}', [ProductoController::class, 'getProductosPorCategoria']);
+    Route::get('/api/pagos/pendientes', [PagoController::class, 'getPagosPendientes']);
 });
 
 require __DIR__.'/auth.php';
