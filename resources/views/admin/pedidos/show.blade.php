@@ -15,10 +15,10 @@
 
 <!-- Grid 2 columnas -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    
+
     <!-- COLUMNA IZQUIERDA (2/3) -->
     <div class="lg:col-span-2 space-y-8">
-        
+
         <!-- Info del Pedido -->
         <div class="bg-gray-800 rounded-xl p-6 border-2 border-gray-700">
             <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
@@ -96,7 +96,7 @@
 
     <!-- COLUMNA DERECHA (1/3) -->
     <div class="space-y-8">
-        
+
         <!-- Info Cliente -->
         <div class="bg-gray-800 rounded-xl p-6 border-2 border-gray-700">
             <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
@@ -131,9 +131,16 @@
         <div class="bg-gray-800 rounded-xl p-6 border-2 border-gray-700">
             <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
                 <i class="fas fa-credit-card text-gold"></i>
-                Pago
+                Información de Pago
             </h3>
             <div class="space-y-3">
+                <div>
+                    <p class="text-gray-400 text-sm">ID del Pago</p>
+                    <a href="{{ route('admin.pagos.show', $pedido->pago->id) }}"
+                       class="text-blue-400 hover:text-blue-300 font-bold">
+                        #{{ $pedido->pago->id }}
+                    </a>
+                </div>
                 <div>
                     <p class="text-gray-400 text-sm">Método</p>
                     <p class="text-white font-semibold">
@@ -146,18 +153,33 @@
                 <div>
                     <p class="text-gray-400 text-sm">Estado del Pago</p>
                     <span class="px-3 py-1 rounded-full text-sm font-bold
-                        {{ $pedido->pago->estado_pago == 'completado' ? 'bg-green-900 text-green-300' : 'bg-yellow-900 text-yellow-300' }}">
-                        {{ $pedido->pago->estado_pago == 'completado' ? '✓ Completado' : '⏳ Pendiente' }}
+                        {{ $pedido->pago->estado_pago == 'completado' ? 'bg-green-900 text-green-300' :
+                           ($pedido->pago->estado_pago == 'pendiente' ? 'bg-yellow-900 text-yellow-300' : 'bg-red-900 text-red-300') }}">
+                        @if($pedido->pago->estado_pago == 'completado') ✓ Completado
+                        @elseif($pedido->pago->estado_pago == 'pendiente') ⏳ Pendiente
+                        @else ❌ Rechazado
+                        @endif
                     </span>
                 </div>
                 <div>
                     <p class="text-gray-400 text-sm">Monto</p>
                     <p class="text-gold font-bold text-xl">${{ number_format($pedido->pago->monto, 2) }}</p>
                 </div>
+                <div>
+                    <p class="text-gray-400 text-sm">Fecha del Pago</p>
+                    <p class="text-white text-sm">{{ $pedido->pago->created_at->format('d/m/Y H:i') }}</p>
+                </div>
             </div>
+
+            <!-- Botón para gestionar pago -->
+            <a href="{{ route('admin.pagos.show', $pedido->pago->id) }}"
+               class="mt-4 w-full block text-center py-2 rounded-lg border-2 border-gold text-gold hover:bg-gold hover:text-dark font-bold transition">
+                <i class="fas fa-edit mr-2"></i>Gestionar Pago
+            </a>
         </div>
 
         <!-- Cambiar Estado -->
+        @if(!in_array($pedido->estado, ['entregado', 'cancelado']))
         <div class="bg-gray-800 rounded-xl p-6 border-2 border-gray-700">
             <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
                 <i class="fas fa-exchange-alt text-gold"></i>
@@ -178,6 +200,32 @@
                 </button>
             </form>
         </div>
+        @else
+        <div class="bg-gray-800 rounded-xl p-6 border-2" style="border-color: {{ $pedido->estado == 'entregado' ? '#059669' : '#dc2626' }};">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-info-circle text-gold"></i>
+                Estado del Pedido
+            </h3>
+            <div class="text-center p-4">
+                <div class="mb-3">
+                    <span class="text-5xl">{{ $pedido->estado == 'entregado' ? '✅' : '❌' }}</span>
+                </div>
+                <h4 class="text-xl font-bold mb-2" style="color: {{ $pedido->estado == 'entregado' ? '#10b981' : '#ef4444' }};">
+                    Pedido {{ $pedido->estado == 'entregado' ? 'Entregado' : 'Cancelado' }}
+                </h4>
+                <p class="text-gray-400 text-sm mb-4">
+                    Este pedido está {{ $pedido->estado == 'entregado' ? 'entregado' : 'cancelado' }} y no se puede modificar.
+                </p>
+                <div class="pt-3 border-t border-gray-700">
+                    <p class="text-gray-500 text-xs">
+                        <i class="fas fa-clock mr-1"></i>
+                        {{ $pedido->estado == 'entregado' ? 'Entregado' : 'Cancelado' }} el:
+                        {{ $pedido->updated_at->format('d/m/Y H:i') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        @endif
 
     </div>
 
