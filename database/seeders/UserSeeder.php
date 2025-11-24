@@ -19,15 +19,5 @@ class UserSeeder extends Seeder
             'telefono' => '3001234567',
             'direccion' => 'Calle Principal #123',
         ]);
-
-        // Empleado
-        User::create([
-            'name' => 'Carlos Empleado',
-            'email' => 'empleado@osorios.com',
-            'password' => Hash::make(''),
-            'role' => 'empleado',
-            'telefono' => '3009876543',
-            'direccion' => 'Avenida 45 #67',
-        ]);
     }
 }
