@@ -24,20 +24,10 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Carlos Empleado',
             'email' => 'empleado@osorios.com',
-            'password' => Hash::make('empleado123'),
+            'password' => Hash::make(''),
             'role' => 'empleado',
             'telefono' => '3009876543',
             'direccion' => 'Avenida 45 #67',
-        ]);
-
-        // Cliente de prueba
-        User::create([
-            'name' => 'Juan Cliente',
-            'email' => 'cliente@test.com',
-            'password' => Hash::make('cliente123'),
-            'role' => 'cliente',
-            'telefono' => '3105551234',
-            'direccion' => 'Carrera 10 #20-30',
         ]);
     }
 }
