@@ -43,7 +43,7 @@ class PedidoController extends Controller
     {
         // Cargar relaciones
         $pedido->load('user', 'pago', 'detalles.producto');
-        
+
         return view('admin.pedidos.show', compact('pedido'));
     }
 
@@ -82,7 +82,7 @@ class PedidoController extends Controller
             // Crear detalles del pedido
             foreach ($validated['items'] as $item) {
                 $subtotal = $item['cantidad'] * $item['precio_unitario'];
-                
+
                 DetallePedido::create([
                     'pedido_id' => $pedido->id,
                     'producto_id' => $item['producto_id'],
@@ -110,7 +110,7 @@ class PedidoController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error al crear el pedido: ' . $e->getMessage(),
@@ -123,22 +123,67 @@ class PedidoController extends Controller
      */
     public function update(Request $request, Pedido $pedido)
     {
+        // ⚠️ VALIDACIÓN: No permitir cambios en pedidos ya completados
+        if (in_array($pedido->estado, ['entregado', 'cancelado'])) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se puede cambiar el estado de un pedido ya ' . ($pedido->estado === 'entregado' ? 'entregado' : 'cancelado')
+                ], 403);
+            }
+
+            return redirect()->back()->with('error', 'No se puede cambiar el estado de un pedido ya completado');
+        }
+
         $validated = $request->validate([
             'estado' => 'required|in:pendiente,en_preparacion,listo,entregado,cancelado',
         ]);
 
-        $pedido->update($validated);
+        try {
+            DB::beginTransaction();
 
-        // Si es una petición AJAX, devolver JSON
-        if ($request->expectsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Estado del pedido actualizado',
-                'estado' => $pedido->estado,
-            ]);
+            $pedido->update($validated);
+
+            // Si el pedido se marca como entregado, actualizar el pago a completado automáticamente
+            if ($validated['estado'] === 'entregado' && $pedido->pago) {
+                $pedido->pago->update([
+                    'estado_pago' => 'completado'
+                ]);
+            }
+
+            // Si el pedido se cancela, marcar el pago como rechazado
+            if ($validated['estado'] === 'cancelado' && $pedido->pago) {
+                $pedido->pago->update([
+                    'estado_pago' => 'rechazado'
+                ]);
+            }
+
+            DB::commit();
+
+            // Si es una petición AJAX, devolver JSON
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Estado del pedido actualizado',
+                    'estado' => $pedido->estado,
+                    'pago' => $pedido->pago,
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Estado del pedido actualizado exitosamente');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al actualizar: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'Error al actualizar el pedido');
         }
-
-        return redirect()->back()->with('success', 'Estado del pedido actualizado');
     }
 
     /**
@@ -179,7 +224,7 @@ class PedidoController extends Controller
         }
 
         $pedido->load('user', 'pago', 'detalles.producto');
-        
+
         return response()->json($pedido);
     }
 
@@ -192,7 +237,7 @@ class PedidoController extends Controller
                         ->whereIn('estado', ['pendiente', 'en_preparacion', 'listo'])
                         ->latest()
                         ->get();
-        
+
         return response()->json($pedidos);
     }
 }
