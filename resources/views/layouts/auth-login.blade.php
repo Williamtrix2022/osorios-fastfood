@@ -15,24 +15,24 @@
             box-sizing: border-box;
         }
 
-        /* Fondo con degradado suave */
+        /* Fondo con degradado suave - SIN SCROLL */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
-            padding: 30px 20px;
+            padding: 20px;
             position: relative;
+            overflow: hidden;
         }
 
         /* Efecto de círculos decorativos en el fondo */
         body::before,
         body::after {
             content: '';
-            position: fixed;
+            position: absolute;
             border-radius: 50%;
             background: rgba(212, 175, 55, 0.05);
             z-index: 0;
@@ -52,7 +52,7 @@
             left: -200px;
         }
 
-        /* Contenedor principal mejorado - SIN SCROLL INTERNO */
+        /* Contenedor principal - SIN SCROLL INTERNO */
         .auth-container {
             width: 100%;
             max-width: 420px;
@@ -65,7 +65,6 @@
             position: relative;
             z-index: 1;
             animation: slideInUp 0.5s ease-out;
-            margin: 0 auto;
         }
 
         /* Animación de entrada */
@@ -297,27 +296,20 @@
                 height: 300px;
             }
         }
-
-        /* Pequeña animación para hacer el sitio más vivo */
-        @media (prefers-reduced-motion: no-preference) {
-            .logo i {
-                animation: floatIcon 3s ease-in-out infinite;
-            }
-
-            @keyframes floatIcon {
-                0%, 100% {
-                    transform: translateY(0px);
-                }
-                50% {
-                    transform: translateY(-8px);
-                }
-            }
-        }
     </style>
+
+    <!-- Stack para CSS adicional de cada vista -->
+    @stack('css')
 </head>
+
 <body>
     <div class="auth-container">
         @yield('content')
     </div>
+
+    <!-- Stack para JavaScript adicional de cada vista -->
+    @stack('scripts')
 </body>
+
 </html>
+
