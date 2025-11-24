@@ -16,7 +16,7 @@ class ProductoController extends Controller
     {
         // Obtener todos los productos con su categoría
         $productos = Producto::with('categoria')->paginate(10);
-        
+
         return view('admin.productos.index', compact('productos'));
     }
 
@@ -27,7 +27,7 @@ class ProductoController extends Controller
     {
         // Obtener todas las categorías para el formulario
         $categorias = Categoria::all();
-        
+
         return view('admin.productos.create', compact('categorias'));
     }
 
@@ -72,7 +72,7 @@ class ProductoController extends Controller
     public function edit(Producto $producto)
     {
         $categorias = Categoria::all();
-        
+
         return view('admin.productos.edit', compact('producto', 'categorias'));
     }
 
@@ -131,7 +131,7 @@ class ProductoController extends Controller
         $productos = Producto::with('categoria')
                             ->where('disponible', true)
                             ->get();
-        
+
         return response()->json($productos);
     }
 
@@ -143,7 +143,7 @@ class ProductoController extends Controller
         $productos = Producto::where('categoria_id', $categoriaId)
                             ->where('disponible', true)
                             ->get();
-        
+
         return response()->json($productos);
     }
 }
