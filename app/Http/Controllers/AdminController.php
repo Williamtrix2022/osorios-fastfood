@@ -19,7 +19,7 @@ class AdminController extends Controller
         $totalClientes = User::where('role', 'cliente')->count();
         $totalProductos = Producto::count();
         $ventasTotales = Pedido::where('estado', 'entregado')->sum('total');
-        
+
         // Pedidos por estado
         $pedidosPorEstado = [
             'pendiente' => Pedido::where('estado', 'pendiente')->count(),
@@ -28,8 +28,12 @@ class AdminController extends Controller
             'entregado' => Pedido::where('estado', 'entregado')->count(),
             'cancelado' => Pedido::where('estado', 'cancelado')->count(),
         ];
-        
-        
+
+        // Estadísticas de pagos
+        $pagosPendientes = \App\Models\Pago::where('estado_pago', 'pendiente')->count();
+        $pagosCompletados = \App\Models\Pago::where('estado_pago', 'completado')->count();
+        $totalRecaudado = \App\Models\Pago::where('estado_pago', 'completado')->sum('monto');
+
         // Productos más vendidos
         $productosMasVendidos = Producto::selectRaw('productos.*, COUNT(detalle_pedidos.id) as ventas')
                                        ->leftJoin('detalle_pedidos', 'productos.id', '=', 'detalle_pedidos.producto_id')
@@ -37,20 +41,23 @@ class AdminController extends Controller
                                        ->orderByDesc('ventas')
                                        ->limit(5)
                                        ->get();
-        
-        
+
+
         // Últimos pedidos
-        $ultimosPedidos = Pedido::with('user')
+        $ultimosPedidos = Pedido::with('user', 'pago')
                                 ->latest()
                                 ->limit(5)
                                 ->get();
-        
+
         return view('admin.dashboard', compact(
             'totalPedidos',
             'totalClientes',
             'totalProductos',
             'ventasTotales',
             'pedidosPorEstado',
+            'pagosPendientes',
+            'pagosCompletados',
+            'totalRecaudado',
             'productosMasVendidos',
             'ultimosPedidos'
         ));
@@ -64,9 +71,9 @@ class AdminController extends Controller
         // Obtener parámetros de filtro
         $filtroFecha = request('fecha', 'todos');
         $filtroEstado = request('estado', 'todos');
-        
+
         $query = Pedido::with('user', 'pago');
-        
+
         // Aplicar filtros
         if ($filtroFecha !== 'todos') {
             if ($filtroFecha === 'hoy') {
@@ -81,17 +88,17 @@ class AdminController extends Controller
                       ->whereYear('created_at', now()->year);
             }
         }
-        
+
         if ($filtroEstado !== 'todos') {
             $query->where('estado', $filtroEstado);
         }
-        
+
         $pedidos = $query->latest()->paginate(20);
-        
+
         // Calcular totales
         $totalVentas = Pedido::sum('total');
         $ventasHoy = Pedido::whereDate('created_at', today())->sum('total');
-        
+
         return view('admin.reportes', compact(
             'pedidos',
             'filtroFecha',
@@ -111,7 +118,7 @@ class AdminController extends Controller
                               ->orderBy('fecha', 'desc')
                               ->limit(7)
                               ->get();
-        
+
         return response()->json([
             'ventasPorDia' => $ventasPorDia,
         ]);
