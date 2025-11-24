@@ -1,16 +1,16 @@
 @extends('layouts.app-empleado')
 
-@section('title', 'Gestión de Pedidos - OsoriosFoodApp')
+@section('title', 'Pedidos Completados - OsoriosFoodApp')
 
 @section('content')
 
 <!-- ===== HEADER ===== -->
 <div class="mb-10">
     <h1 class="text-5xl font-bold text-white mb-2">
-        <i class="fas fa-clipboard-list" style="color: var(--color-gold);"></i>
-        Gestión de Pedidos
+        <i class="fas fa-check-double" style="color: var(--color-gold);"></i>
+        Pedidos Completados
     </h1>
-    <p class="text-gray-400 text-lg">Administra el estado de todos los pedidos</p>
+    <p class="text-gray-400 text-lg">Pedidos entregados y cancelados de hoy</p>
 </div>
 
 <!-- ===== FILTROS ===== -->
@@ -22,21 +22,55 @@
                 style="background-color: var(--color-gold); color: var(--color-dark);">
             <i class="fas fa-list mr-2"></i>Todos
         </button>
-        <button onclick="filterByStatus('pendiente')"
+        <button onclick="filterByStatus('entregado')"
                 class="filter-btn px-6 py-2 rounded-full font-semibold bg-gray-700 hover:bg-gray-600 transition text-white"
-                data-status="pendiente">
-            <i class="fas fa-hourglass-start mr-2"></i>Pendientes
+                data-status="entregado">
+            <i class="fas fa-check-circle mr-2"></i>Entregados
         </button>
-        <button onclick="filterByStatus('en_preparacion')"
+        <button onclick="filterByStatus('cancelado')"
                 class="filter-btn px-6 py-2 rounded-full font-semibold bg-gray-700 hover:bg-gray-600 transition text-white"
-                data-status="en_preparacion">
-            <i class="fas fa-chef mr-2"></i>En Preparación
+                data-status="cancelado">
+            <i class="fas fa-times-circle mr-2"></i>Cancelados
         </button>
-        <button onclick="filterByStatus('listo')"
-                class="filter-btn px-6 py-2 rounded-full font-semibold bg-gray-700 hover:bg-gray-600 transition text-white"
-                data-status="listo">
-            <i class="fas fa-check-circle mr-2"></i>Listos
-        </button>
+    </div>
+</div>
+
+<!-- ===== ESTADÍSTICAS RÁPIDAS ===== -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-gradient-to-br from-green-900 to-green-800 rounded-xl p-6 border-2 border-green-600">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-green-300 text-sm font-semibold uppercase mb-2">Entregados Hoy</p>
+                <h2 class="text-4xl font-bold text-white" id="countEntregados">{{ $pedidos->where('estado', 'entregado')->count() }}</h2>
+            </div>
+            <div class="bg-green-500 w-16 h-16 rounded-full flex items-center justify-center">
+                <i class="fas fa-truck text-3xl text-green-900"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gradient-to-br from-red-900 to-red-800 rounded-xl p-6 border-2 border-red-600">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-red-300 text-sm font-semibold uppercase mb-2">Cancelados Hoy</p>
+                <h2 class="text-4xl font-bold text-white" id="countCancelados">{{ $pedidos->where('estado', 'cancelado')->count() }}</h2>
+            </div>
+            <div class="bg-red-500 w-16 h-16 rounded-full flex items-center justify-center">
+                <i class="fas fa-ban text-3xl text-red-900"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gradient-to-br from-purple-900 to-purple-800 rounded-xl p-6 border-2 border-purple-600">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-purple-300 text-sm font-semibold uppercase mb-2">Total Hoy</p>
+                <h2 class="text-4xl font-bold text-white">{{ $pedidos->total() }}</h2>
+            </div>
+            <div class="bg-purple-500 w-16 h-16 rounded-full flex items-center justify-center">
+                <i class="fas fa-list-check text-3xl text-purple-900"></i>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -47,7 +81,7 @@
         <div class="inline-block animate-spin">
             <i class="fas fa-spinner text-4xl text-gold"></i>
         </div>
-        <p class="text-gray-400 mt-4">Cargando pedidos...</p>
+        <p class="text-gray-400 mt-4">Cargando pedidos completados...</p>
     </div>
 </div>
 
@@ -59,11 +93,20 @@
         background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
         border: 2px solid #404040;
         transition: all 0.3s ease;
+        opacity: 0.9;
     }
 
     .pedido-card:hover {
-        border-color: var(--color-gold);
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+
+    .pedido-card.entregado {
+        border-color: #059669;
+    }
+
+    .pedido-card.cancelado {
+        border-color: #dc2626;
     }
 
     .filter-btn.active {
@@ -79,21 +122,6 @@
         display: inline-block;
     }
 
-    .status-pendiente {
-        background-color: #b8860b;
-        color: white;
-    }
-
-    .status-en_preparacion {
-        background-color: #1e40af;
-        color: white;
-    }
-
-    .status-listo {
-        background-color: #7c3aed;
-        color: white;
-    }
-
     .status-entregado {
         background-color: #059669;
         color: white;
@@ -102,81 +130,6 @@
     .status-cancelado {
         background-color: #dc2626;
         color: white;
-    }
-
-    .action-btn {
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border: none;
-        cursor: pointer;
-    }
-
-    .btn-preparar {
-        background-color: #1e40af;
-        color: white;
-    }
-
-    .btn-preparar:hover {
-        background-color: #1e3a8a;
-    }
-
-    .btn-listo {
-        background-color: #7c3aed;
-        color: white;
-    }
-
-    .btn-listo:hover {
-        background-color: #6d28d9;
-    }
-
-    .btn-entregar {
-        background-color: #059669;
-        color: white;
-    }
-
-    .btn-entregar:hover {
-        background-color: #047857;
-    }
-
-    .btn-cancelar {
-        background-color: #dc2626;
-        color: white;
-    }
-
-    .btn-cancelar:hover {
-        background-color: #b91c1c;
-    }
-
-    /* Estilos para SweetAlert */
-    .swal-btn-confirm {
-        font-weight: 600 !important;
-        padding: 12px 30px !important;
-        border-radius: 8px !important;
-        font-size: 15px !important;
-        box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3) !important;
-        transition: all 0.3s ease !important;
-    }
-
-    .swal-btn-confirm:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 15px rgba(212, 175, 55, 0.4) !important;
-    }
-
-    .swal-btn-cancel {
-        font-weight: 600 !important;
-        padding: 12px 30px !important;
-        border-radius: 8px !important;
-        font-size: 15px !important;
-        box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3) !important;
-        transition: all 0.3s ease !important;
-    }
-
-    .swal-btn-cancel:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4) !important;
     }
 </style>
 @endpush
@@ -188,7 +141,7 @@
     let isFirstLoad = true;
 
     /**
-     * FUNCIÓN: Cargar todos los pedidos (optimizado)
+     * FUNCIÓN: Cargar pedidos completados (optimizado)
      */
     async function loadPedidos() {
         try {
@@ -199,12 +152,12 @@
                         <div class="inline-block animate-spin">
                             <i class="fas fa-spinner text-4xl text-gold"></i>
                         </div>
-                        <p class="text-gray-400 mt-4">Cargando pedidos...</p>
+                        <p class="text-gray-400 mt-4">Cargando pedidos completados...</p>
                     </div>
                 `;
             }
 
-            const response = await fetch('/empleado/api/pedidos', {
+            const response = await fetch('/empleado/api/pedidos-completados', {
                 headers: {
                     'Accept': 'application/json',
                     'Cache-Control': 'no-cache'
@@ -249,22 +202,19 @@
             container.innerHTML = `
                 <div class="text-center py-16 bg-gray-800 rounded-xl border-2 border-gray-700">
                     <i class="fas fa-inbox text-gray-500 text-6xl mb-4 block"></i>
-                    <p class="text-gray-400 text-lg">No hay pedidos con este estado</p>
+                    <p class="text-gray-400 text-lg">No hay pedidos completados con este filtro</p>
                 </div>
             `;
             return;
         }
 
         const statusLabels = {
-            'pendiente': '⏳ Pendiente',
-            'en_preparacion': '👨‍🍳 En Preparación',
-            'listo': '✓ Listo',
             'entregado': '🚚 Entregado',
             'cancelado': '❌ Cancelado'
         };
 
         container.innerHTML = pedidos.map(pedido => `
-            <div class="pedido-card rounded-xl p-6">
+            <div class="pedido-card ${pedido.estado} rounded-xl p-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                     <!-- COLUMNA 1: INFO DEL PEDIDO -->
@@ -281,7 +231,7 @@
                         </p>
                         <p class="text-gray-400 text-sm mb-2">
                             <i class="fas fa-clock mr-2 text-gold"></i>
-                            <strong>Hora:</strong> ${new Date(pedido.created_at).toLocaleTimeString('es-CO')}
+                            <strong>Completado:</strong> ${new Date(pedido.updated_at).toLocaleTimeString('es-CO', {hour: '2-digit', minute: '2-digit'})}
                         </p>
                         <p class="text-gray-400 text-sm mb-2">
                             <i class="fas fa-calendar mr-2 text-gold"></i>
@@ -321,46 +271,33 @@
                         ` : ''}
                     </div>
 
-                    <!-- COLUMNA 3: ACCIONES -->
+                    <!-- COLUMNA 3: INFO PAGO Y ACCIONES -->
                     <div class="flex flex-col justify-between">
                         <div>
                             <h4 class="text-white font-semibold mb-3">
-                                <i class="fas fa-tasks mr-2 text-gold"></i>
-                                Acciones
+                                <i class="fas fa-credit-card mr-2 text-gold"></i>
+                                Información de Pago
                             </h4>
-                            <div class="space-y-2">
-                                ${pedido.estado === 'pendiente' ? `
-                                    <button onclick="cambiarEstado(${pedido.id}, 'en_preparacion')"
-                                            class="action-btn btn-preparar w-full">
-                                        <i class="fas fa-chef mr-2"></i>Iniciar Preparación
-                                    </button>
-                                ` : ''}
-
-                                ${pedido.estado === 'en_preparacion' ? `
-                                    <button onclick="cambiarEstado(${pedido.id}, 'listo')"
-                                            class="action-btn btn-listo w-full">
-                                        <i class="fas fa-check-circle mr-2"></i>Marcar como Listo
-                                    </button>
-                                ` : ''}
-
-                                ${pedido.estado === 'listo' ? `
-                                    <button onclick="cambiarEstado(${pedido.id}, 'entregado')"
-                                            class="action-btn btn-entregar w-full">
-                                        <i class="fas fa-truck mr-2"></i>Marcar como Entregado
-                                    </button>
-                                ` : ''}
-
-                                ${pedido.estado !== 'entregado' && pedido.estado !== 'cancelado' ? `
-                                    <button onclick="cambiarEstado(${pedido.id}, 'cancelado')"
-                                            class="action-btn btn-cancelar w-full">
-                                        <i class="fas fa-times-circle mr-2"></i>Cancelar Pedido
-                                    </button>
-                                ` : ''}
+                            <div class="space-y-2 text-sm">
+                                <p class="text-gray-300">
+                                    <strong>Método:</strong>
+                                    ${pedido.pago.metodo_pago === 'efectivo' ? '💵 Efectivo' :
+                                      pedido.pago.metodo_pago === 'tarjeta' ? '💳 Tarjeta' :
+                                      '🏦 Transferencia'}
+                                </p>
+                                <p class="text-gray-300">
+                                    <strong>Estado:</strong>
+                                    <span class="${pedido.pago.estado_pago === 'completado' ? 'text-green-400' : pedido.pago.estado_pago === 'pendiente' ? 'text-yellow-400' : 'text-red-400'}">
+                                        ${pedido.pago.estado_pago === 'completado' ? '✓ Completado' :
+                                          pedido.pago.estado_pago === 'pendiente' ? '⏳ Pendiente' :
+                                          '❌ Rechazado'}
+                                    </span>
+                                </p>
                             </div>
                         </div>
 
                         <button onclick="window.location.href='/empleado/pedido/${pedido.id}'"
-                                class="mt-4 text-gold hover:text-accent font-semibold transition">
+                                class="mt-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition">
                             <i class="fas fa-eye mr-2"></i>Ver Detalles Completos
                         </button>
                     </div>
@@ -368,6 +305,10 @@
                 </div>
             </div>
         `).join('');
+
+        // Actualizar contadores
+        document.getElementById('countEntregados').textContent = todosPedidos.filter(p => p.estado === 'entregado').length;
+        document.getElementById('countCancelados').textContent = todosPedidos.filter(p => p.estado === 'cancelado').length;
     }
 
     /**
@@ -384,115 +325,6 @@
 
         // Renderizar
         renderPedidos();
-    }
-
-    /**
-     * FUNCIÓN: Cambiar estado de un pedido
-     */
-    async function cambiarEstado(pedidoId, nuevoEstado) {
-        const estadosLabels = {
-            'en_preparacion': 'En Preparación',
-            'listo': 'Listo',
-            'entregado': 'Entregado',
-            'cancelado': 'Cancelado'
-        };
-
-        const estadosIconos = {
-            'en_preparacion': '👨‍🍳',
-            'listo': '✅',
-            'entregado': '🚚',
-            'cancelado': '❌'
-        };
-
-        const result = await Swal.fire({
-            title: '¿Confirmar cambio de estado?',
-            html: `
-                <div style="padding: 20px;">
-                    <p style="font-size: 16px; color: #6b7280; margin-bottom: 15px;">
-                        El pedido <strong>#${pedidoId}</strong> será marcado como:
-                    </p>
-                    <div style="padding: 15px; background: #f3f4f6; border-radius: 10px; border-left: 4px solid #D4AF37;">
-                        <span style="font-size: 20px;">${estadosIconos[nuevoEstado]}</span>
-                        <strong style="font-size: 18px; color: #1f2937; margin-left: 10px;">
-                            ${estadosLabels[nuevoEstado]}
-                        </strong>
-                    </div>
-                </div>
-            `,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#D4AF37',
-            cancelButtonColor: '#ef4444',
-            confirmButtonText: '<i class="fas fa-check mr-2"></i>Sí, cambiar estado',
-            cancelButtonText: '<i class="fas fa-times mr-2"></i>No, cancelar',
-            buttonsStyling: true,
-            customClass: {
-                confirmButton: 'swal-btn-confirm',
-                cancelButton: 'swal-btn-cancel'
-            },
-            width: '500px',
-            padding: '2em'
-        });
-
-        if (!result.isConfirmed) return;
-
-        // Mostrar loading
-        Swal.fire({
-            title: 'Actualizando...',
-            html: 'Por favor espera un momento',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
-        try {
-            const response = await fetch(`/empleado/pedido/${pedidoId}/estado`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ estado: nuevoEstado })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                await Swal.fire({
-                    icon: 'success',
-                    title: '¡Estado actualizado!',
-                    html: `
-                        <p>El pedido <strong>#${pedidoId}</strong> ahora está:</p>
-                        <p style="font-size: 18px; color: #059669; margin-top: 10px;">
-                            <strong>${estadosIconos[nuevoEstado]} ${estadosLabels[nuevoEstado]}</strong>
-                        </p>
-                    `,
-                    timer: 2500,
-                    showConfirmButton: false
-                });
-
-                // Recargar pedidos sin mostrar loading
-                await loadPedidos();
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: data.message || 'No se pudo actualizar el estado',
-                    confirmButtonColor: '#D4AF37'
-                });
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error de conexión',
-                text: 'Hubo un problema al actualizar el estado. Por favor, intenta nuevamente.',
-                confirmButtonColor: '#D4AF37'
-            });
-        }
     }
 
     /**
@@ -513,7 +345,7 @@
     });
 
     /**
-     * Auto-refresh cada 30 segundos (optimizado)
+     * Auto-refresh cada 60 segundos (para pedidos completados no es tan crítico)
      */
     let refreshInterval;
     let lastUpdateTime = Date.now();
@@ -532,7 +364,7 @@
                     indicator.innerHTML = `<i class="fas fa-clock mr-2"></i>Última actualización: hace ${seconds}s`;
                 }, 2000);
             }
-        }, 30000); // 30 segundos
+        }, 60000); // 60 segundos
     }
 
     startAutoRefresh();
@@ -544,3 +376,4 @@
 
 </script>
 @endpush
+

@@ -159,6 +159,7 @@
     @endif
 
     <!-- CAMBIAR ESTADO -->
+    @if(!in_array($pedido->estado, ['entregado', 'cancelado']))
     <div class="acciones-card">
         <h4 class="card-title">
             <i class="fas fa-tasks mr-2"></i>
@@ -199,6 +200,35 @@
             </div>
         </form>
     </div>
+    @else
+    <div class="acciones-card" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid {{ $pedido->estado === 'entregado' ? '#059669' : '#dc2626' }};">
+        <h4 class="card-title">
+            <i class="fas fa-info-circle mr-2"></i>
+            Estado del Pedido
+        </h4>
+        <div class="p-4 text-center">
+            <div class="mb-4">
+                <span class="text-6xl">{{ $pedido->estado === 'entregado' ? '✅' : '❌' }}</span>
+            </div>
+            <h3 class="text-2xl font-bold mb-2" style="color: {{ $pedido->estado === 'entregado' ? '#10b981' : '#ef4444' }};">
+                Pedido {{ $pedido->estado === 'entregado' ? 'Entregado' : 'Cancelado' }}
+            </h3>
+            <p class="text-gray-400 mb-6">
+                Este pedido ya fue {{ $pedido->estado === 'entregado' ? 'entregado' : 'cancelado' }} y no se puede modificar su estado.
+            </p>
+            <div class="flex gap-3 justify-center">
+                <a href="{{ route('empleado.pedidos') }}" class="btn-secondary">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Volver a Pedidos Activos
+                </a>
+                <a href="{{ route('empleado.pedidos.completados') }}" class="btn-primary">
+                    <i class="fas fa-check-double mr-2"></i>
+                    Ver Pedidos Completados
+                </a>
+            </div>
+        </div>
+    </div>
+    @endif
 
 </div>
 
