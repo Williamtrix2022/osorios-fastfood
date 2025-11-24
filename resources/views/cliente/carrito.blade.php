@@ -557,6 +557,16 @@
 @push('scripts')
 <script>
     /**
+     * Formatea un precio en pesos colombianos
+     */
+    function formatPrecio(precio) {
+        return '$ ' + parseFloat(precio).toLocaleString('es-CO', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    }
+
+    /**
      * ===== CARGAR ITEMS DEL CARRITO =====
      */
     function loadCartItems() {
@@ -598,7 +608,7 @@
                             <div>
                                 <h3 class="item-name">${item.nombre}</h3>
                                 <p class="item-price-unit">
-                                    Precio unitario: <span class="price-value">$${parseFloat(item.precio).toFixed(2)}</span>
+                                    Precio unitario: <span class="price-value">${formatPrecio(item.precio)}</span>
                                 </p>
                             </div>
 
@@ -614,7 +624,7 @@
                                 </div>
 
                                 <div class="item-total">
-                                    <span class="item-total-price">$${(item.precio * item.cantidad).toFixed(2)}</span>
+                                    <span class="item-total-price">${formatPrecio(item.precio * item.cantidad)}</span>
                                     <button onclick="removeItem(${index})" class="btn-remove">
                                         <i class="fas fa-trash-alt mr-1"></i>Eliminar
                                     </button>
@@ -708,9 +718,9 @@
         const tax = subtotal * 0.10;
         const total = subtotal + tax;
 
-        document.getElementById('resumenSubtotal').textContent = `$${subtotal.toFixed(2)}`;
-        document.getElementById('resumenTax').textContent = `$${tax.toFixed(2)}`;
-        document.getElementById('resumenTotal').textContent = `$${total.toFixed(2)}`;
+        document.getElementById('resumenSubtotal').textContent = formatPrecio(subtotal);
+        document.getElementById('resumenTax').textContent = formatPrecio(tax);
+        document.getElementById('resumenTotal').textContent = formatPrecio(total);
     }
 
     /**
