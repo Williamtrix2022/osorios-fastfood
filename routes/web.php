@@ -6,6 +6,7 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\EmpleadoAdminController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,7 @@ Route::get('/', function () {
 // Dashboard genérico (Breeze) - redirige según rol
 Route::get('/dashboard', function () {
     $user = Auth::user();
-    
+
     if ($user->role === 'administrador') {
         return redirect()->route('admin.dashboard');
     } elseif ($user->role === 'empleado') {
@@ -42,14 +43,14 @@ Route::middleware(['auth', 'cliente'])->prefix('cliente')->name('cliente.')->gro
     Route::get('/carrito', [ClienteController::class, 'carrito'])->name('carrito');
     Route::get('/mis-pedidos', [ClienteController::class, 'misPedidos'])->name('pedidos');
     Route::get('/pedido/{id}', [ClienteController::class, 'verPedido'])->name('pedido.detalle');
-    
+
     // APIs para cliente
     Route::get('/api/categorias', [ClienteController::class, 'getCategorias']);
     Route::get('/api/productos', [ClienteController::class, 'getProductos']);
     Route::get('/api/producto/{id}', [ClienteController::class, 'getProductoDetalle']);
     Route::get('/api/mis-pedidos', [PedidoController::class, 'getMisPedidos']);
     Route::get('/api/pedido/{pedido}', [PedidoController::class, 'getPedidoDetalle']);
-    
+
     // Crear pedido
     Route::post('/crear-pedido', [PedidoController::class, 'store']);
 });
@@ -62,7 +63,7 @@ Route::middleware(['auth', 'empleado'])->prefix('empleado')->name('empleado.')->
     Route::get('/pedidos', [EmpleadoController::class, 'pedidos'])->name('pedidos');
     Route::get('/pedido/{id}', [EmpleadoController::class, 'verPedido'])->name('pedido.detalle');
     Route::patch('/pedido/{pedido}/estado', [EmpleadoController::class, 'cambiarEstado'])->name('pedido.estado');
-    
+
     // APIs para empleado
     Route::get('/api/pendientes', [EmpleadoController::class, 'getPedidosPendientes']);
     Route::get('/api/en-preparacion', [EmpleadoController::class, 'getPedidosEnPreparacion']);
@@ -75,16 +76,19 @@ Route::middleware(['auth', 'empleado'])->prefix('empleado')->name('empleado.')->
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/reportes', [AdminController::class, 'reportes'])->name('reportes');
-    
+
     // CRUD de productos
     Route::resource('productos', ProductoController::class);
-    
+
+    // CRUD de empleados (solo para admin)
+    Route::resource('empleados', EmpleadoAdminController::class)->except(['show']);
+
     // Gestión de pedidos
     Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
     Route::get('/pedido/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::patch('/pedido/{pedido}', [PedidoController::class, 'update'])->name('pedidos.update');
     Route::delete('/pedido/{pedido}', [PedidoController::class, 'destroy'])->name('pedidos.destroy');
-    
+
     // APIs para admin
     Route::get('/api/estadisticas', [AdminController::class, 'getEstadisticas']);
     Route::get('/api/productos', [ProductoController::class, 'getProductos']);
