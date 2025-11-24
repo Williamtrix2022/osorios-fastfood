@@ -1,4 +1,4 @@
-@extends('layouts.auth')
+@extends('layouts.auth-login')
 
 @section('title', 'Iniciar Sesión - OsoriosFoodApp')
 
@@ -26,12 +26,12 @@
             <i class="fas fa-envelope"></i>
             Correo Electrónico
         </label>
-        <input id="email" 
-               type="email" 
-               name="email" 
-               value="{{ old('email') }}" 
-               required 
-               autofocus 
+        <input id="email"
+               type="email"
+               name="email"
+               value="{{ old('email') }}"
+               required
+               autofocus
                autocomplete="username"
                class="form-input"
                placeholder="tu@email.com">
@@ -50,16 +50,16 @@
             Contraseña
         </label>
         <div style="position: relative;">
-            <input id="password" 
-                   type="password" 
-                   name="password" 
-                   required 
+            <input id="password"
+                   type="password"
+                   name="password"
+                   required
                    autocomplete="current-password"
                    class="form-input"
                    placeholder="••••••••"
                    style="padding-right: 45px;">
-            <button type="button" 
-                    onclick="togglePassword()" 
+            <button type="button"
+                    onclick="togglePassword()"
                     style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 8px; transition: color 0.2s;">
                 <i class="fas fa-eye" id="toggleIcon"></i>
             </button>
@@ -99,7 +99,7 @@
 
     <!-- Link a registro -->
     <div class="text-center">
-        ¿No tienes cuenta? 
+        ¿No tienes cuenta?
         <a href="{{ route('register') }}" class="link">Regístrate aquí</a>
     </div>
 </form>
@@ -109,7 +109,7 @@
 function togglePassword() {
     const passwordInput = document.getElementById('password');
     const toggleIcon = document.getElementById('toggleIcon');
-    
+
     if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
         toggleIcon.classList.remove('fa-eye');
